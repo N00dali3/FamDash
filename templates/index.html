@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Family Dashboard</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        background-color: #2c2c2c;
+        color: #fff;
+        border: 4px solid #8f2525;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+    header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: #8f2525;
+        color: white;
+        padding: 20px 40px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 20px;
+        border: 2px solid #fff;
+    }
+    .profiles {
+        display: flex;
+        gap: 20px;
+    }
+    .profile-pic {
+        width: 75px;
+        height: 75px;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        object-fit: cover;
+    }
+    .dashboard {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        padding: 20px;
+        flex: 1;
+    }
+    .card {
+        padding: 15px;
+        border-radius: 10px;
+        color: #fff;
+        border: 2px solid #fff;
+        font-size: 1.2em;
+        display: flex;
+        flex-direction: column;
+    }
+    .card-content {
+        background-color: #fff;
+        color: #000;
+        padding: 10px;
+        border-radius: 8px;
+        flex: 1;
+        overflow: auto;
+    }
+    .calendar { background-color: #3b82f6; }
+    .chores { background-color: #f59e0b; }
+    .weather { background-color: #10b981; }
+    .meals { background-color: #ef4444; }
+    .shopping { background-color: #8b5cf6; }
+    .notes { background-color: #ec4899; }
+    .card span.icon {
+        font-size: 3em;
+        display: block;
+        margin-bottom: 10px;
+    }
+    iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        border-radius: 8px;
+    }
+    hr {
+        border: none;
+        border-top: 1px solid #ccc;
+        margin: 8px 0;
+    }
+.card.calendar .card-content {
+    display: flex;
+    gap: 10px; /* space between the two calendars */
+}
+
+.card.calendar .card-content iframe {
+    width: 50%; /* each calendar takes half the width */
+    height: 300px; /* adjust height as needed */
+    border-radius: 8px;
+    border: none;
+}
+</style>
+</head>
+<body>
+<header>
+    <div class="profiles">
+        <a href="index.html"><img src="Pics/home.jpg" alt="Profile 4" class="profile-pic"></a>
+        <a href="kurt.html"><img src="Pics/Kurt.jpg" alt="Profile 1" class="profile-pic"></a>
+        <a href="natalie.html"><img src="Pics/Natalie.jpg" alt="Profile 2" class="profile-pic"></a>
+        <a href="bouncer.html"><img src="Pics/Bouncer.jpg" alt="Profile 3" class="profile-pic"></a>
+    </div>
+    <h1>Hoernig Family Dashboard</h1>
+</header>
+
+<iframe frameBorder="0" height="200" src="https://kwize.com/quote-of-the-day/embed/&txt=0"></iframe>
+<a style="display:block; font-size:12px; color:black;" href="https://kwize.com/quote-of-the-day/">Quote of the day @Kwize</a>
+
+<div class="dashboard">
+    <!-- Google Calendar iframe -->
+    <div class="card calendar">
+        <span class="icon">📅</span>
+        <h3>Family Calendar</h3>
+        <div class="card-content">
+            <iframe src="https://calendar.google.com/calendar/embed?src=9c28e5b95348de1ef0331966a98cfdba655a73daa44173aed4d887b7c789626e%40group.calendar.google.com&ctz=America%2FNew_York"></iframe>
+           <iframe src="https://calendar.google.com/calendar/embed?src=ee1b560f1ed4ad9d85c951fc118b348a9bfa46e05a994e9b228f19936821b0d6%40group.calendar.google.com&ctz=America%2FNew_York"></iframe>
+        </div>
+    </div>
+
+    <!-- Chores card -->
+    <div class="card chores">
+        <span class="icon">🧹</span>
+        <h3>Chore List</h3>
+        <div class="card-content">
+            <ul id="today-chores"></ul>
+        </div>
+    </div>
+
+    <!-- Weather card with Elfsight widget -->
+    <div class="card weather">
+        <span class="icon">☀️</span>
+        <h3>Weather</h3>
+        <div class="card-content">
+            <!-- Replace elfsight-app-xxxxxxxx with your actual Elfsight widget ID -->
+             <script src="https://elfsightcdn.com/platform.js" async></script>
+            <div class="elfsight-app-c98687be-b9f9-4754-9306-718d1dfd09bd"></div>
+        </div>
+    </div>
+
+    <!-- Meal Planner Card -->
+    <div class="card meals">
+        <span class="icon">🍽</span>
+        <h3>Weekly Meal Planner</h3>
+        <div class="card-content">
+            <form id="mealForm">
+                <select id="mealDay">
+                    <option value="Monday">Monday</option>
+                    <option value="Tuesday">Tuesday</option>
+                    <option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option>
+                    <option value="Friday">Friday</option>
+                    <option value="Saturday">Saturday</option>
+                    <option value="Sunday">Sunday</option>
+                </select>
+                <input type="text" id="mealInput" placeholder="Enter meal" required />
+                <button type="submit">Add Meal</button>
+            </form>
+            <ul id="mealList"></ul>
+        </div>
+    </div>
+
+    <!-- Shopping List Card -->
+    <div class="card shopping">
+        <span class="icon">🛒</span>
+        <h3>This Week's Shopping List</h3>
+        <div class="card-content">
+            <form id="shoppingForm">
+                <input type="text" id="shoppingInput" placeholder="Add item" required />
+                <button type="submit">Add</button>
+            </form>
+            <ul id="shoppingList"></ul>
+        </div>
+    </div>
+
+    <!-- Important Notes Card -->
+    <div class="card notes">
+        <span class="icon">📝</span>
+        <h3>Important Notes</h3>
+        <div class="card-content">
+            <form id="notesForm">
+                <input type="text" id="notesInput" placeholder="Add note" required />
+                <button type="submit">Add Note</button>
+            </form>
+            <ul id="notesList"></ul>
+        </div>
+    </div>
+</div>
+
+<script>
+// --- Helper to format YYYY-MM-DD ---
+function formatISO(date) {
+    return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+}
+
+// --- Load chores from localStorage ---
+function loadTodaysChores() {
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || {};
+    let today = new Date();
+    let todayStr = formatISO(today);
+
+    let choresList = document.getElementById('today-chores');
+    choresList.innerHTML = "";
+
+    let users = Object.keys(tasks);
+    let hasTasks = false;
+
+    users.forEach((user, index) => {
+        if(tasks[user][todayStr] && tasks[user][todayStr].length > 0){
+            let userHeader = document.createElement('li');
+            userHeader.style.fontWeight = "bold";
+            userHeader.textContent = user + ":";
+            choresList.appendChild(userHeader);
+
+            tasks[user][todayStr].forEach(task => {
+                let li = document.createElement('li');
+                li.textContent = task;
+                choresList.appendChild(li);
+            });
+
+            if (index < users.length - 1) {
+                let hr = document.createElement('hr');
+                choresList.appendChild(hr);
+            }
+
+            hasTasks = true;
+        }
+    });
+
+    if(!hasTasks){
+        choresList.innerHTML = "<li>No chores for today.</li>";
+    }
+}
+
+// --- Meal Planner ---
+const mealForm = document.getElementById("mealForm");
+const mealInput = document.getElementById("mealInput");
+const mealDay = document.getElementById("mealDay");
+const mealList = document.getElementById("mealList");
+
+let meals = JSON.parse(localStorage.getItem("meals")) || {
+  Monday: [], Tuesday: [], Wednesday: [], Thursday: [],
+  Friday: [], Saturday: [], Sunday: []
+};
+
+function renderMeals() {
+    mealList.innerHTML = "";
+    for (let day in meals) {
+        meals[day].forEach((meal, index) => {
+            const li = document.createElement("li");
+            li.innerHTML = `<strong>${day}:</strong> ${meal} 
+                <button onclick="editMeal('${day}',${index})">✏️</button>
+                <button onclick="deleteMeal('${day}',${index})">❌</button>`;
+            mealList.appendChild(li);
+        });
+    }
+}
+
+function editMeal(day, index) {
+    const newMeal = prompt("Edit meal:", meals[day][index]);
+    if(newMeal) {
+        meals[day][index] = newMeal;
+        localStorage.setItem("meals", JSON.stringify(meals));
+        renderMeals();
+    }
+}
+
+function deleteMeal(day, index) {
+    meals[day].splice(index,1);
+    localStorage.setItem("meals", JSON.stringify(meals));
+    renderMeals();
+}
+
+mealForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const day = mealDay.value;
+    const meal = mealInput.value.trim();
+    if (meal) {
+        meals[day].push(meal);
+        localStorage.setItem("meals", JSON.stringify(meals));
+        renderMeals();
+        mealInput.value = "";
+    }
+});
+
+renderMeals();
+
+// --- Shopping List ---
+const shoppingForm = document.getElementById("shoppingForm");
+const shoppingInput = document.getElementById("shoppingInput");
+const shoppingList = document.getElementById("shoppingList");
+
+let shoppingItems = JSON.parse(localStorage.getItem("shoppingItems")) || [];
+
+function renderShopping() {
+    shoppingList.innerHTML = "";
+    shoppingItems.forEach((item, index) => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+            <input type="checkbox" ${item.done ? "checked" : ""} data-index="${index}">
+            <span style="text-decoration:${item.done ? "line-through" : "none"}">${item.text}</span>
+            <button onclick="removeItem(${index})">❌</button>
+        `;
+        shoppingList.appendChild(li);
+    });
+}
+
+shoppingForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const text = shoppingInput.value.trim();
+    if (text) {
+        shoppingItems.push({ text, done: false });
+        localStorage.setItem("shoppingItems", JSON.stringify(shoppingItems));
+        renderShopping();
+        shoppingInput.value = "";
+    }
+});
+
+shoppingList.addEventListener("change", (e) => {
+    if (e.target.type === "checkbox") {
+        const index = e.target.dataset.index;
+        shoppingItems[index].done = e.target.checked;
+        localStorage.setItem("shoppingItems", JSON.stringify(shoppingItems));
+        renderShopping();
+    }
+});
+
+function removeItem(index) {
+    shoppingItems.splice(index, 1);
+    localStorage.setItem("shoppingItems", JSON.stringify(shoppingItems));
+    renderShopping();
+}
+
+renderShopping();
+
+// --- Important Notes ---
+const notesForm = document.getElementById("notesForm");
+const notesInput = document.getElementById("notesInput");
+const notesList = document.getElementById("notesList");
+
+let notes = JSON.parse(localStorage.getItem("notes")) || [];
+
+function renderNotes() {
+    notesList.innerHTML = "";
+    notes.forEach((note,index)=>{
+        const li = document.createElement("li");
+        li.innerHTML = `
+            ${note} 
+            <button onclick="editNote(${index})">✏️</button>
+            <button onclick="deleteNote(${index})">❌</button>
+        `;
+        notesList.appendChild(li);
+    });
+}
+
+function editNote(index){
+    const newNote = prompt("Edit note:", notes[index]);
+    if(newNote){
+        notes[index] = newNote;
+        localStorage.setItem("notes", JSON.stringify(notes));
+        renderNotes();
+    }
+}
+
+function deleteNote(index){
+    notes.splice(index,1);
+    localStorage.setItem("notes", JSON.stringify(notes));
+    renderNotes();
+}
+
+notesForm.addEventListener("submit",(e)=>{
+    e.preventDefault();
+    const text = notesInput.value.trim();
+    if(text){
+        notes.push(text);
+        localStorage.setItem("notes", JSON.stringify(notes));
+        renderNotes();
+        notesInput.value="";
+    }
+});
+
+renderNotes();
+loadTodaysChores();
+</script>
+</body>
+</html>
