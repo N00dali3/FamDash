@@ -1,6 +1,6 @@
 from flask import Flask, render_template
 
-app = Flask(FamDash)
+app = Flask(__name__)
 
 # Homepage route
 @app.route('/')
@@ -12,5 +12,5 @@ def home():
 def info():
     return render_template('index.html')
 
-if FamDash  == '__main__':
+if __name__  == '__main__':
     app.run(debug=True)
